@@ -3,14 +3,12 @@ import Razorpay from "razorpay";
 import { env } from "./env/envSchema";
 import { logger } from "hono/logger";
 import { cors } from "hono/cors";
-import { handle } from "hono/vercel";
 
-export const config = {
-  runtime: "edge",
-};
+const app = new Hono();
 
-const app = new Hono().basePath("/api");
+// middleware
 app.use(cors(), logger());
+
 // razorpay
 app.post("/order", async (c) => {
   const { receipt, amount } = await c.req.json();
@@ -34,7 +32,7 @@ app.post("/order", async (c) => {
 });
 
 app.get("/", (c) => {
-  return c.json({ message: "Hello Hono!" });
+  return c.text("Hello Hono!");
 });
 
-export default handle(app);
+export default app;
